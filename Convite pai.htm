@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Dilson 73 Anos — Convocado!</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700;900&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --flu-green: #0d5c2e;
+  --flu-green-light: #1a8045;
+  --flu-green-glow: #22a85a;
+  --flu-wine: #6b1a2a;
+  --flu-cream: #f7f0e6;
+  --flu-gold: #c9a84c;
+  --white: #ffffff;
+  --black: #080c08;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Barlow Condensed', sans-serif;
+  background: var(--black);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── CANVAS PARTÍCULAS ── */
+#canvas-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── LAYOUT GERAL ── */
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ══════════════════════════════════════════
+   TELA 0 — SPLASH INICIAL
+══════════════════════════════════════════ */
+#splash {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--black);
+  position: relative;
+  overflow: hidden;
+}
+
+.splash-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(13,92,46,0.45) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: translate(-50%,-50%) scale(1); opacity: 0.6; }
+  50% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; }
+}
+
+.splash-stripes {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -55deg,
+    transparent,
+    transparent 40px,
+    rgba(13,92,46,0.04) 40px,
+    rgba(13,92,46,0.04) 80px
+  );
+}
+
+.splash-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem;
+  animation: splashIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes splashIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.splash-eyebrow {
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: var(--flu-gold);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.4s both;
+}
+
+.splash-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(72px, 20vw, 110px);
+  color: var(--white);
+  line-height: 0.9;
+  letter-spacing: 4px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.6s both;
+}
+
+.splash-title span {
+  color: var(--flu-green-glow);
+  display: block;
+}
+
+.splash-sub {
+  font-size: clamp(13px, 3.5vw, 16px);
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 1rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.8s both;
+}
+
+.splash-line {
+  width: 60px;
+  height: 2px;
+  background: var(--flu-gold);
+  margin: 1.5rem auto;
+  opacity: 0;
+  animation: fadeUp 0.8s 1s both;
+}
+
+.splash-cta {
+  margin-top: 0.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.2s both;
+}
+
+.btn-unlock {
+  background: transparent;
+  border: 2px solid var(--flu-green-glow);
+  color: var(--flu-green-glow);
+  padding: 14px 36px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-unlock::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--flu-green-glow);
+  transform: translateX(-101%);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: -1;
+}
+
+.btn-unlock:hover {
+  color: var(--black);
+}
+
+.btn-unlock:hover::before {
+  transform: translateX(0);
+}
+
+/* ══════════════════════════════════════════
+   TELA 1 — SELEÇÃO DE ESCUDOS
+══════════════════════════════════════════ */
+#selecao {
+  display: none;
+  width: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(160deg, #0a0e0a 0%, #0d1f12 50%, #0a0e0a 100%);
+  padding-bottom: 3rem;
+}
+
+.sel-header {
+  width: 100%;
+  text-align: center;
+  padding: 3rem 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 2rem;
+}
+
+.sel-tag {
+  display: inline-block;
+  background: var(--flu-gold);
+  color: var(--black);
+  font-size: 9px;
+  letter-spacing: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  margin-bottom: 1.2rem;
+}
+
+.sel-title-main {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 6vw, 30px);
+  color: var(--white);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.sel-title-main em {
+  color: var(--flu-green-glow);
+  font-style: italic;
+}
+
+.sel-hint {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Grid de escudos */
+.shields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 380px;
+  padding: 0 1.2rem;
+}
+
+.shield-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 1.8rem 1rem 1.2rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.shield-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(34,168,90,0.12), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.shield-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  border-color: rgba(34,168,90,0.4);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(34,168,90,0.15);
+}
+
+.shield-card:hover::before { opacity: 1; }
+
+.shield-card img {
+  width: 80px;
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  transition: filter 0.3s;
+}
+
+.shield-card:hover img {
+  filter: drop-shadow(0 6px 20px rgba(34,168,90,0.4));
+}
+
+.shield-name {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════
+   TELA ERROU
+══════════════════════════════════════════ */
+#errou {
+  display: none;
+  width: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, #0f0305 0%, #1a0000 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.errou-noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.errou-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 380px;
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: shakeIn 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shakeIn {
+  0% { transform: translateX(-30px); opacity: 0; }
+  20% { transform: translateX(25px); }
+  40% { transform: translateX(-15px); }
+  60% { transform: translateX(10px); }
+  80% { transform: translateX(-5px); }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+.errou-badge {
+  background: #8b0000;
+  color: white;
+  font-size: 9px;
+  letter-spacing: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  margin-bottom: 1rem;
+  border-radius: 2px;
+}
+
+.errou-big {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 15vw, 72px);
+  color: white;
+  letter-spacing: 4px;
+  line-height: 1;
+  text-shadow: 0 0 40px rgba(139,0,0,0.8);
+}
+
+.errou-msg {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.9;
+  margin: 1rem 0 1.8rem;
+  font-style: italic;
+}
+
+.errou-shield {
+  width: 110px;
+  height: 124px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: grayscale(0.3) drop-shadow(0 6px 20px rgba(139,0,0,0.5));
+  margin-bottom: 2rem;
+  animation: floatShield 3s ease-in-out infinite;
+}
+
+.errou-shield svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes floatShield {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+.btn-voltar {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.7);
+  padding: 12px 28px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.25s;
+}
+
+.btn-voltar:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.5);
+  color: white;
+}
+
+/* ══════════════════════════════════════════
+   TELA CONVOCADO
+══════════════════════════════════════════ */
+#convocado {
+  display: none;
+  width: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  background: var(--flu-green);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efeito raios de luz */
+.conv-rays {
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from 0deg at 50% 35%,
+    rgba(255,255,255,0.0) 0deg,
+    rgba(255,255,255,0.06) 5deg,
+    rgba(255,255,255,0.0) 10deg,
+    rgba(255,255,255,0.04) 18deg,
+    rgba(255,255,255,0.0) 25deg,
+    rgba(255,255,255,0.06) 30deg,
+    rgba(255,255,255,0.0) 38deg,
+    rgba(255,255,255,0.04) 48deg,
+    rgba(255,255,255,0.0) 58deg
+  );
+  animation: raysRotate 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes raysRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.conv-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 400px;
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.conv-pre {
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  animation: fadeUp 0.6s 0.1s both;
+}
+
+.conv-huge {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(60px, 18vw, 80px);
+  color: white;
+  letter-spacing: 4px;
+  line-height: 0.95;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+  animation: fadeUp 0.6s 0.2s both;
+}
+
+.conv-shield-wrap {
+  margin: 1.5rem 0;
+  animation: shieldReveal 0.8s 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  position: relative;
+}
+
+@keyframes shieldReveal {
+  from { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+  to { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.conv-shield-glow {
+  position: absolute;
+  inset: -30px;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: pulseGlow2 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow2 {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+.conv-shield-img {
+  width: 140px;
+  height: 157px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,0.4));
+  position: relative;
+  z-index: 1;
+}
+
+.conv-team {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 4px;
+  animation: fadeUp 0.6s 0.6s both;
+}
+
+.conv-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 1.5rem 0;
+  width: 100%;
+  max-width: 240px;
+  animation: fadeUp 0.6s 0.7s both;
+}
+
+.conv-divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+}
+
+.conv-divider-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--flu-gold);
+}
+
+.btn-ver-convite {
+  background: white;
+  color: var(--flu-green);
+  border: none;
+  padding: 15px 36px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.3s;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  animation: fadeUp 0.6s 0.9s both;
+}
+
+.btn-ver-convite:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.4);
+}
+
+/* ══════════════════════════════════════════
+   TELA CONVITE FINAL
+══════════════════════════════════════════ */
+#convite {
+  display: none;
+  width: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, #070d08 0%, #0d1f12 40%, #0a1a0d 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Confete canvas */
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Padrão campo de futebol sutil */
+.field-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(34,168,90,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,168,90,0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+}
+
+/* Marca central círculo */
+.field-circle {
+  position: absolute;
+  top: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 300px;
+  border: 1px solid rgba(34,168,90,0.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.convite-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── HEADER CONVITE — CANVA ── */
+.cvi-canva-header {
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  opacity: 0;
+  animation: fadeUp 0.7s 0.2s both;
+}
+
+/* ── MENSAGEM ── */
+.cvi-msg-block {
+  width: 100%;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 0.7s 1s both;
+}
+
+.cvi-msg-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 5vw, 22px);
+  color: white;
+  font-style: italic;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.cvi-msg-body {
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 1.5px;
+  line-height: 2;
+  text-transform: uppercase;
+}
+
+.cvi-jersey-icon {
+  font-size: 40px;
+  margin-bottom: 1rem;
+  display: block;
+  animation: jersey 2s ease-in-out infinite;
+}
+
+@keyframes jersey {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* ── DATA BOX ── */
+.cvi-data-wrap {
+  width: calc(100% - 2.4rem);
+  margin: 0 1.2rem;
+  background: white;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  opacity: 0;
+  animation: fadeUp 0.7s 1.2s both;
+  position: relative;
+  overflow: hidden;
+}
+
+.cvi-data-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--flu-wine), var(--flu-green), var(--flu-gold));
+}
+
+.data-row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.data-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.data-item-label {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.35);
+  font-weight: 600;
+}
+
+.data-item-value {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 8vw, 36px);
+  color: var(--flu-green);
+  letter-spacing: 3px;
+  line-height: 1;
+}
+
+.data-item-value.red {
+  color: var(--flu-wine);
+}
+
+.data-separator {
+  width: 40px;
+  height: 1px;
+  background: rgba(0,0,0,0.1);
+  margin: 0 auto;
+}
+
+/* ── CAMISA CALL ── */
+.cvi-camisa {
+  width: 100%;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 0.7s 1.4s both;
+}
+
+.cvi-camisa-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.8;
+}
+
+.cvi-camisa-text strong {
+  color: var(--flu-green-glow);
+  font-style: normal;
+}
+
+/* ── COUNTDOWN ── */
+.countdown-wrap {
+  width: calc(100% - 2.4rem);
+  margin: 0 1.2rem 1.5rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 0.7s 1.3s both;
+}
+
+.countdown-label {
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.countdown-nums {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cd-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.cd-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 38px;
+  color: var(--flu-green-glow);
+  line-height: 1;
+  min-width: 52px;
+  background: rgba(34,168,90,0.1);
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.cd-text {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+}
+
+.cd-sep {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: rgba(255,255,255,0.2);
+  line-height: 1;
+  padding-top: 6px;
+}
+
+/* ── CANVA EMBED ── */
+.cvi-canva-wrap {
+  width: calc(100% - 2.4rem);
+  margin: 1.5rem 1.2rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  opacity: 0;
+  animation: fadeUp 0.7s 1.5s both;
+}
+
+.cvi-canva-label {
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 0.8rem;
+  padding-top: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.7s 1.45s both;
+}
+
+/* ── FOOTER ── */
+.cvi-footer {
+  width: 100%;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.7s 1.7s both;
+}
+
+.cvi-footer-text {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+}
+
+/* ── UTILITÁRIOS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.flex-col { display: flex; flex-direction: column; }
+
+/* ── TRANSIÇÃO ENTRE TELAS ── */
+.screen-transition {
+  animation: screenIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes cardPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34,168,90,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(34,168,90,0); }
+}
+
+.shield-card:active {
+  animation: cardPulse 0.4s ease-out;
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ══ TELA 0 — SPLASH ══ -->
+<div id="splash" class="page">
+  <div class="splash-glow"></div>
+  <div class="splash-stripes"></div>
+  <div class="splash-content">
+    <p class="splash-eyebrow">30 de Maio · Sábado · 2026</p>
+    <div class="splash-title">
+      Dilson
+      <span>73</span>
+    </div>
+    <p class="splash-sub">uma celebração especial</p>
+    <div class="splash-line"></div>
+    <div class="splash-cta">
+      <button class="btn-unlock" onclick="mostrarSelecao()">
+        Abrir Convite
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TELA 1 — SELEÇÃO ══ -->
+<div id="selecao" class="page" style="display:none;">
+  <div class="sel-header">
+    <div class="sel-tag">Missão Secreta</div>
+    <h1 class="sel-title-main">Qual é o escudo<br><em>mais bonito</em> do Brasil?</h1>
+    <p class="sel-hint">apenas um abre o convite</p>
+  </div>
+  <div class="shields-grid">
+    <button class="shield-card" onclick="escolher('flu')">
+      <img src="https://i.imgur.com/4bdHNCT.png" alt="Fluminense">
+      <span class="shield-name">Fluminense</span>
+    </button>
+    <button class="shield-card" onclick="escolher('fla')">
+      <img src="https://i.imgur.com/DCt3KLg.png" alt="Flamengo">
+      <span class="shield-name">Flamengo</span>
+    </button>
+    <button class="shield-card" onclick="escolher('vas')">
+      <img src="https://i.imgur.com/sgr7QxD.png" alt="Vasco">
+      <span class="shield-name">Vasco</span>
+    </button>
+    <button class="shield-card" onclick="escolher('spfc')">
+      <img src="https://i.imgur.com/VhmyCOQ.png" alt="São Paulo">
+      <span class="shield-name">São Paulo</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ TELA ERROU ══ -->
+<div id="errou" class="page" style="display:none;">
+  <div class="errou-noise"></div>
+  <div class="errou-inner">
+    <div class="errou-badge">❌ Resposta Incorreta</div>
+    <div class="errou-big" id="errou-title">ERROU FEIO!</div>
+    <p class="errou-msg" id="errou-msg">B</span>oa sorte
+</div>Esse escudo não vai desbloquear nada.<br>Pense melhor e tente de novo.</p>
+    <div id="errou-shield-img" class="errou-shield"></div>
+    <button class="btn-voltar" onclick="mostrarSelecao()">← Escolher de Novo</button>
+  </div>
+</div>
+
+<!-- ══ TELA CONVOCADO ══ -->
+<div id="convocado" class="page" style="display:none;">
+  <div class="conv-rays"></div>
+  <div class="conv-inner">
+    <p class="conv-pre">✓ Resposta correta — você está</p>
+    <div class="conv-huge">CONVOCADO</div>
+    <div class="conv-shield-wrap">
+      <div class="conv-shield-glow"></div>
+      <img src="https://i.imgur.com/4bdHNCT.png" alt="Fluminense"
+        class="conv-shield-img">
+    </div>
+    <div class="conv-team"> Time Dilson | 73</div>
+    <div class="conv-divider">
+      <div class="conv-divider-line"></div>
+      <div class="conv-divider-dot"></div>
+      <div class="conv-divider-line"></div>
+    </div>
+    <button class="btn-ver-convite" onclick="mostrarConvite()">
+      Ver Convite Completo →
+    </button>
+  </div>
+</div>
+
+<!-- ══ TELA CONVITE FINAL ══ -->
+<div id="convite" class="page" style="display:none;">
+  <div class="field-pattern"></div>
+  <div class="field-circle"></div>
+  <div class="convite-inner">
+
+    <!-- Header — Imagem do Convite -->
+    <div class="cvi-canva-header">
+      <img src="https://i.imgur.com/6WwzMQa.jpeg" alt="Convite Dilson 73 Anos"
+        style="width:100%; display:block; object-fit:cover;">
+    </div>
+
+    <!-- Mensagem -->
+    <div class="cvi-msg-block">
+      <span class="cvi-jersey-icon">👕</span>
+      <h2 class="cvi-msg-title">Algumas histórias merecem ser celebradas<br></h2>
+      <p class="cvi-msg-body">
+        uma partida que merece<br>toda a torcida presente
+      </p>
+    </div>
+
+    <!-- Data / Hora / Local -->
+    <div class="cvi-data-wrap">
+      <div class="data-row">
+        <div class="data-item">
+          <span class="data-item-label">📅 Data</span>
+          <span class="data-item-value">Sábado · 30.05</span>
+        </div>
+        <div class="data-separator"></div>
+        <div class="data-item">
+          <span class="data-item-label">⏰ Hora</span>
+          <span class="data-item-value red">12H00</span>
+        </div>
+        <div class="data-separator"></div>
+        <div class="data-item">
+          <span class="data-item-label">🎂 Celebrando</span>
+          <span class="data-item-value" style="font-size:clamp(22px,6vw,28px);">73 ANOS DE DILSON</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Countdown -->
+    <div class="countdown-wrap" style="margin-top:1.5rem;">
+      <p class="countdown-label">⏳ Faltam para a festa</p>
+      <div class="countdown-nums">
+        <div class="cd-unit">
+          <div class="cd-num" id="cd-h">00</div>
+          <div class="cd-text">Horas</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cd-m">00</div>
+          <div class="cd-text">Min</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cd-s">00</div>
+          <div class="cd-text">Seg</div>
+        </div>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="cvi-footer">
+      <p class="cvi-footer-text">dilson 73 · 30 de maio de 2026 · Forrózin tricolor das laranjeiras</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   PARTÍCULAS DE FUNDO
+══════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('canvas-bg');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  class Particle {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x = Math.random() * W;
+      this.y = init ? Math.random() * H : H + 10;
+      this.size = Math.random() * 2 + 0.5;
+      this.speed = Math.random() * 0.4 + 0.15;
+      this.opacity = Math.random() * 0.5 + 0.1;
+      this.hue = Math.random() > 0.6 ? 140 : (Math.random() > 0.5 ? 45 : 0);
+    }
+    update() {
+      this.y -= this.speed;
+      if (this.y < -10) this.reset(false);
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${this.hue}, 60%, 60%, ${this.opacity})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ══════════════════════════════════════════
+   CONFETE
+══════════════════════════════════════════ */
+let confettiActive = false;
+let confettiPieces = [];
+
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  confettiActive = true;
+  confettiPieces = [];
+
+  const colors = ['#0d5c2e','#22a85a','#c9a84c','#ffffff','#6b1a2a','#f7f0e6'];
+  for (let i = 0; i < 120; i++) {
+    confettiPieces.push({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * 200,
+      w: Math.random() * 10 + 5,
+      h: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 8,
+      vx: (Math.random() - 0.5) * 3,
+      vy: Math.random() * 4 + 2,
+      opacity: 1
+    });
+  }
+
+  let frame = 0;
+  function draw() {
+    if (!confettiActive) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    confettiPieces.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rotSpeed;
+      if (p.y > canvas.height * 0.7) p.opacity -= 0.01;
+      if (p.opacity > 0 && p.y < canvas.height + 20) {
+        alive = true;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI / 180);
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      }
+    });
+    if (alive) requestAnimationFrame(draw);
+    else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiActive = false;
+    }
+  }
+  draw();
+}
+
+/* ══════════════════════════════════════════
+   NAVEGAÇÃO
+══════════════════════════════════════════ */
+const screens = ['splash','selecao','errou','convocado','convite'];
+
+function showScreen(id) {
+  screens.forEach(s => {
+    const el = document.getElementById(s);
+    el.style.display = 'none';
+  });
+  const target = document.getElementById(id);
+  target.style.display = 'flex';
+  target.classList.remove('screen-transition');
+  void target.offsetWidth;
+  target.classList.add('screen-transition');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function mostrarSelecao() {
+  showScreen('selecao');
+}
+
+const svgEscudos = {
+  fla: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+    <!-- Escudo Flamengo -->
+    <path d="M100 10 L190 50 L190 130 Q190 190 100 215 Q10 190 10 130 L10 50 Z" fill="#CC0000" stroke="#000" stroke-width="3"/>
+    <path d="M100 10 L145 50 L145 130 Q145 170 100 190 Q55 170 55 130 L55 50 Z" fill="#000"/>
+    <!-- listras -->
+    <rect x="55" y="50" width="18" height="140" fill="#CC0000" rx="2"/>
+    <rect x="91" y="50" width="18" height="140" fill="#CC0000" rx="2"/>
+    <rect x="127" y="50" width="18" height="140" fill="#CC0000" rx="2"/>
+    <text x="100" y="205" text-anchor="middle" font-size="11" fill="white" font-family="Arial" font-weight="bold">FLAMENGO</text>
+  </svg>`,
+  vas: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+    <!-- Escudo Vasco -->
+    <path d="M100 10 L190 50 L190 130 Q190 190 100 215 Q10 190 10 130 L10 50 Z" fill="#000080" stroke="#000" stroke-width="3"/>
+    <path d="M100 10 L190 50 L190 130 Q190 190 100 215 Q10 190 10 130 L10 50 Z" fill="none" stroke="#fff" stroke-width="8"/>
+    <!-- cruz -->
+    <rect x="88" y="30" width="24" height="160" fill="white" rx="3"/>
+    <rect x="30" y="88" width="140" height="24" fill="white" rx="3"/>
+    <text x="100" y="205" text-anchor="middle" font-size="11" fill="white" font-family="Arial" font-weight="bold">VASCO</text>
+  </svg>`,
+  spfc: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+    <!-- Escudo São Paulo -->
+    <path d="M100 10 L190 50 L190 130 Q190 190 100 215 Q10 190 10 130 L10 50 Z" fill="white" stroke="#CC0000" stroke-width="4"/>
+    <!-- faixas -->
+    <path d="M10 95 L190 95 L190 125 L10 125 Z" fill="#CC0000"/>
+    <path d="M10 125 L190 125 L190 155 L10 155 Z" fill="#000"/>
+    <!-- topo vermelho -->
+    <path d="M100 10 L190 50 L190 95 L10 95 L10 50 Z" fill="#CC0000"/>
+    <text x="100" y="205" text-anchor="middle" font-size="11" fill="#CC0000" font-family="Arial" font-weight="bold">SÃO PAULO</text>
+  </svg>`
+};
+
+const erroData = {
+  fla: {
+    title: 'ERROU FEIO!',
+    msg: 'Aqui não tem VAR pra te ajudar.<br>Volte e escolha o escudo certo! 👀',
+    img: 'https://i.imgur.com/6zqQCfI.png'
+  },
+  vas: {
+    title: 'ERROU!',
+    msg: 'Você sabe que esse não é o certo.<br>Tente de novo e pense melhor.',
+    img: 'https://i.imgur.com/R2reHic.png'
+  },
+  spfc: {
+    title: 'JUROU NÉ?',
+    msg: 'Esse aí não vai funcionar aqui.<br>Volte e escolha o que abre o convite.',
+    img: 'https://i.imgur.com/B3lK0rV.png'
+  }
+};
+
+function escolher(time) {
+  if (time === 'flu') {
+    showScreen('convocado');
+    setTimeout(launchConfetti, 400);
+  } else {
+    const d = erroData[time];
+    document.getElementById('errou-title').textContent = d.title;
+    document.getElementById('errou-msg').innerHTML = d.msg;
+    document.getElementById('errou-shield-img').innerHTML =
+`<img src="${d.img}" style="width:110px;height:110px;object-fit:contain;">`;
+    showScreen('errou');
+  }
+}
+
+function mostrarConvite() {
+  showScreen('convite');
+  setTimeout(launchConfetti, 300);
+  startCountdown();
+}
+
+/* ══════════════════════════════════════════
+   COUNTDOWN
+══════════════════════════════════════════ */
+function startCountdown() {
+  const festa = new Date('2026-05-30T12:00:00');
+
+  function tick() {
+    const now = new Date();
+    const diff = festa - now;
+    if (diff <= 0) {
+      document.getElementById('cd-h').textContent = '🎉';
+      document.getElementById('cd-m').textContent = '🎉';
+      document.getElementById('cd-s').textContent = '🎉';
+      return;
+    }
+    const horas = Math.floor(diff / 3600000);
+    const mins  = Math.floor((diff % 3600000) / 60000);
+    const secs  = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-h').textContent = String(horas).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(mins).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(secs).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+</script>
+</body>
+</html>
